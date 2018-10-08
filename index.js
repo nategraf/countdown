@@ -1,5 +1,5 @@
 function getTimeRemaining(endtime) {
-  var t = Date.parse(endtime) - Date.parse(new Date());
+  var t = Math.max(Date.parse(endtime) - Date.parse(new Date()), 0);
   var seconds = Math.floor((t / 1000) % 60);
   var minutes = Math.floor((t / 1000 / 60) % 60);
   var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
@@ -37,5 +37,14 @@ function initializeClock(id, endtime) {
   var timeinterval = setInterval(updateClock, 1000);
 }
 
-var deadline = new Date(Date.parse(new Date()) + 15 * 24 * 60 * 60 * 1000);
-initializeClock('clockdiv', deadline);
+let params = new URLSearchParams(window.location.search);
+let deadline = new Date(params.get('end'));
+let title = params.get('title')
+if (title) {
+    document.getElementById("clocktitle").innerText = title;
+}
+if (isNaN(deadline)) {
+    initializeClock('clockdiv', new Date());
+} else {
+    initializeClock('clockdiv', deadline);
+}
